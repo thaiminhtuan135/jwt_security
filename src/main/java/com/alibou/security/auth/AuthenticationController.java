@@ -1,9 +1,13 @@
 package com.alibou.security.auth;
 
+import com.alibou.security.service.UserService;
 import com.alibou.security.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.NoSuchElementException;
 
 @CrossOrigin
 @RestController
@@ -13,6 +17,7 @@ public class AuthenticationController {
 
   private final AuthenticationService service;
 
+  private final UserService userService;
 
   @PostMapping("/register")
   public ResponseEntity<AuthenticationResponse> register(
@@ -26,10 +31,4 @@ public class AuthenticationController {
   ) {
     return ResponseEntity.ok(service.authenticate(request));
   }
-
-//  @GetMapping("/getUser")
-//  public ResponseEntity<User> getUser() {
-//    return ResponseEntity.ok(service.authenticate());
-//  }
-
 }

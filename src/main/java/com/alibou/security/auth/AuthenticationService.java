@@ -1,6 +1,8 @@
 package com.alibou.security.auth;
 
+import com.alibou.security.Entity.Student;
 import com.alibou.security.config.JwtService;
+import com.alibou.security.repo.StudentRepository;
 import com.alibou.security.token.Token;
 import com.alibou.security.token.TokenRepository;
 import com.alibou.security.token.TokenType;
@@ -22,6 +24,8 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
+  private final StudentRepository studentRepository;
+
   public AuthenticationResponse register(RegisterRequest request) {
     var user = User.builder()
         .firstname(request.getFirstname())
@@ -30,6 +34,14 @@ public class AuthenticationService {
         .password(passwordEncoder.encode(request.getPassword()))
         .role(Role.USER)
         .build();
+    var student = Student.builder()
+            .firstname(request.getFirstname())
+            .lastname(request.getLastname())
+            .email(request.getEmail())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .role(Role.USER)
+            .build();
+    studentRepository.save(student);
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
     saveUserToken(savedUser, jwtToken);
