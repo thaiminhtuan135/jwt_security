@@ -6,6 +6,8 @@ import com.alibou.security.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StudentServiceImpl implements StudentService {
 
@@ -20,4 +22,10 @@ public class StudentServiceImpl implements StudentService {
     public Student getByFirstname(String firstname) {
         return studentRepository.findStudentByFirstname(firstname).get();
     }
+
+    @Override
+    public List<Student> listStudent() {
+        return studentRepository.findAll();
+    }
+
 }
