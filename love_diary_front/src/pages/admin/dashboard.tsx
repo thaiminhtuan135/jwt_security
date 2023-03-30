@@ -1,5 +1,6 @@
 import {PropsWithChildren, RefObject, useEffect, useRef} from "react";
-import axios, {head} from "axios";
+import axios from "axios";
+import Map from "@/pages/component/map";
 
 function Dashboard(props:PropsWithChildren) {
     const sidebarRef: RefObject<HTMLElement> = useRef(null);
@@ -62,7 +63,7 @@ function Dashboard(props:PropsWithChildren) {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'data.csv');
+                link.setAttribute('download', 'student.csv');
                 document.body.appendChild(link);
                 link.click();
                 link.parentNode.removeChild(link);
@@ -245,7 +246,14 @@ function Dashboard(props:PropsWithChildren) {
                     <div className="flex px-5 py-3 text-gray-700  rounded-lg bg-gray-50 dark:bg-[#1E293B] "
                          aria-label="Breadcrumb">
                         {props.children}
-                        <button onClick={download}>Download CSV</button>
+                        <Map />
+                    </div>
+                    <div>
+                        {/*<button onClick={download}>Download CSV</button>*/}
+                        <div className="top-10 left-10 relative">ta cung nhau</div>
+                        <div>ngh iden dau dau</div>
+                        <div>xa nhau</div>
+                        <div>thuong nhieu</div>
                     </div>
                 </div>
             </div>
