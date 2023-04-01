@@ -11,6 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,9 +27,13 @@ public class Student {
     @Id
     @GeneratedValue
     private Integer id;
+    @NotBlank(message = "Firstname cannot be empty")
     private String firstname;
+    @NotBlank(message = "Lastname cannot be empty")
     private String lastname;
+    @NotBlank(message = "Email cannot be empty")
     private String email;
+//    @NotBlank(message = "Password cannot be empty")
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
