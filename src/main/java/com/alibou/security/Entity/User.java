@@ -1,6 +1,7 @@
-package com.alibou.security.user;
+package com.alibou.security.Entity;
 
-import com.alibou.security.token.Token;
+import com.alibou.security.Enum.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -29,9 +32,19 @@ public class User implements UserDetails {
   @Id
   @GeneratedValue
   private Integer id;
-  private String firstname;
-  private String lastname;
+  private String Ho;
+  private String TenDem;
+  private String Ten;
+  private String PhapDanh;
+  private String AnhChup;
+  private String SoDienThoai;
   private String email;
+  private LocalDate NgaySinh;
+  private LocalDate NgayXuatGia;
+  private boolean DaHoanTuc;
+  private LocalDate NgayHoanTuc;
+  private String GioiTinh;
+  private LocalDate NgayCapNhat;
   private String password;
 
   @Enumerated(EnumType.STRING)
@@ -39,6 +52,7 @@ public class User implements UserDetails {
 
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
+  @JsonManagedReference
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

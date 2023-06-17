@@ -1,7 +1,7 @@
 package com.alibou.security.service;
 
-import com.alibou.security.user.User;
-import com.alibou.security.user.UserRepository;
+import com.alibou.security.Entity.User;
+import com.alibou.security.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getUser(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.existsByEmail(email,null);
+    }
+
+    @Override
+    public boolean existEmail(String email,Integer id) {
+        return userRepository.existsByEmail(email,id).isPresent();
+    }
+
+    @Override
+    public Optional<User> getUserById(int id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
     }
 }

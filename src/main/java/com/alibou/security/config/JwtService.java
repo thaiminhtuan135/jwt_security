@@ -1,6 +1,6 @@
 package com.alibou.security.config;
 
-import com.alibou.security.user.User;
+import com.alibou.security.Entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -38,9 +38,9 @@ public class JwtService {
             .setClaims(extraClaims)
             .setSubject(user.getUsername())
             .claim("roles", user.getAuthorities())
-            .claim("username", user.getFirstname()+user.getLastname())
+            .claim("id", user.getId())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
   }

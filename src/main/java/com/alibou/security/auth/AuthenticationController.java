@@ -1,21 +1,10 @@
 package com.alibou.security.auth;
 
-import com.alibou.security.Entity.Student;
 import com.alibou.security.service.UserService;
-import com.alibou.security.user.Role;
-import com.alibou.security.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -28,20 +17,11 @@ public class AuthenticationController {
   private final UserService userService;
 
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    var student = Student.builder()
-            .firstname(request.getFirstname())
-            .lastname(request.getLastname())
-            .email(request.getEmail())
-            .role(Role.USER)
-            .build();
-    Set<ConstraintViolation<Student>> violations = validator.validate(student);
-    if (!violations.isEmpty()) {
-      List<String> errors = violations.stream()
-              .map(ConstraintViolation::getMessage)
-              .collect(Collectors.toList());
-      return ResponseEntity.badRequest().body(errors);
+  public ResponseEntity<?> register(
+          @RequestBody AuthenticationRequest request
+  ) {
+    if (userService.existEmail(request.getEmail(),null)) {
+      return new ResponseEntity<>("Email already exists, please enter another email", HttpStatus.NOT_FOUND);
     }
     return ResponseEntity.ok(service.register(request));
   }
@@ -50,5 +30,13 @@ public class AuthenticationController {
       @RequestBody AuthenticationRequest request
   ) {
     return ResponseEntity.ok(service.authenticate(request));
+  }
+
+  @PostMapping("/check-exist-email/{email}")
+  public ResponseEntity<?> checkEmail(@PathVariable String email) {
+    if (userService.existEmail(email,null)) {
+      return new ResponseEntity<>("Email already exists, please enter another email", HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.ACCEPTED);
   }
 }

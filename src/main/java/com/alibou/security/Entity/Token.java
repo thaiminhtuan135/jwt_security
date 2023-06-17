@@ -1,6 +1,8 @@
-package com.alibou.security.token;
+package com.alibou.security.Entity;
 
-import com.alibou.security.user.User;
+import com.alibou.security.Enum.TokenType;
+import com.alibou.security.Entity.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,5 +39,6 @@ public class Token {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @JsonBackReference
   public User user;
 }
