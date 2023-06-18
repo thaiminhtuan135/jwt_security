@@ -10,6 +10,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -33,14 +34,24 @@ public class JwtService {
   }
 
   public String generateToken(Map<String, Object> extraClaims, User user) {
+    AtomicReference<String> role = new AtomicReference<>("");
+    user.getAuthorities().forEach(x -> {
+      if ("ROLE_ADMIN".equals(x.getAuthority())) {
+        role.set("ADMIN");
+      }
+      if ("ROLE_MANAGER".equals(x.getAuthority())) {
+        role.set("MANAGER");
+      }
+      System.out.println(x);
+    });
     return Jwts
             .builder()
             .setClaims(extraClaims)
             .setSubject(user.getUsername())
-            .claim("roles", user.getAuthorities())
+            .claim("roles", role)
             .claim("username", user.getFirstname()+user.getLastname())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 3)) // 3 tieng
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
   }
