@@ -18,6 +18,9 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+import static com.alibou.security.Enum.Role.ADMIN;
+import static com.alibou.security.Enum.Role.USER;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -35,6 +38,9 @@ public class SecurityConfiguration {
             .authorizeHttpRequests()
             .requestMatchers("/api/v1/auth/**", "/images/**")
             .permitAll()
+
+            .requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name())
+            .requestMatchers("/api/v1/user/**").hasAnyRole(ADMIN.name(),USER.name())
             .anyRequest()
             .authenticated()
             .and()

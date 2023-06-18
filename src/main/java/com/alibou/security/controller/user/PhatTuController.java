@@ -1,4 +1,4 @@
-package com.alibou.security.controller;
+package com.alibou.security.controller.user;
 
 import com.alibou.security.Entity.User;
 import com.alibou.security.common.Helper;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1/phattu")
+@RequestMapping("/api/v1/user/phattu")
 @RequiredArgsConstructor
 public class PhatTuController {
     @Autowired
