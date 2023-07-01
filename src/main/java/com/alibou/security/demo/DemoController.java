@@ -1,6 +1,7 @@
 package com.alibou.security.demo;
 
-import com.alibou.security.service.UserService;
+import com.alibou.security.service.user.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Hidden
 public class DemoController {
 
   @Autowired

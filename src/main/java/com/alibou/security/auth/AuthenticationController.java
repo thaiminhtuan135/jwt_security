@@ -1,6 +1,6 @@
 package com.alibou.security.auth;
 
-import com.alibou.security.service.UserService;
+import com.alibou.security.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,15 +2,11 @@ package com.alibou.security.Entity;
 
 import com.alibou.security.Enum.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -46,11 +42,15 @@ public class User implements UserDetails {
   private String GioiTinh;
   private LocalDate NgayCapNhat;
   private String password;
+  @Nullable
+  private String otp;
+  @Nullable
+  private LocalDateTime otpCreateTime;
 
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
   private List<Token> tokens;
   @JsonManagedReference
 
