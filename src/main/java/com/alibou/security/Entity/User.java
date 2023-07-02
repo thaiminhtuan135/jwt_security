@@ -26,7 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   private String Ho;
   private String TenDem;
@@ -46,6 +46,10 @@ public class User implements UserDetails {
   private String otp;
   @Nullable
   private LocalDateTime otpCreateTime;
+  @Nullable
+  private LocalDateTime createdAt;
+  @Nullable
+  private LocalDateTime updatedAt;
 
   @Enumerated(EnumType.STRING)
   private Role role;
