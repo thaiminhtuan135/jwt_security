@@ -1,7 +1,9 @@
 package com.alibou.security.auth;
 
+import com.alibou.security.Entity.KieuThanhVien;
 import com.alibou.security.config.JwtService;
 import com.alibou.security.Entity.Token;
+import com.alibou.security.repo.KieuThanhVienRepository;
 import com.alibou.security.repo.TokenRepository;
 import com.alibou.security.Enum.TokenType;
 import com.alibou.security.Enum.Role;
@@ -24,12 +26,15 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final KieuThanhVienRepository kieuThanhVienRepository;
 
   public ResponseEntity<?> register(AuthenticationRequest request) {
+    KieuThanhVien kieuThanhVien = kieuThanhVienRepository.findById(1).get();
     var user = User.builder()
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
-            .role(Role.USER)
+            .role(Role.USER).kieuThanhVien(kieuThanhVien)
+            .kieu_thanh_vien_id(kieuThanhVien.getId())
             .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);

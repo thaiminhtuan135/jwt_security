@@ -1,6 +1,7 @@
 package com.alibou.security.Entity;
 
 import com.alibou.security.Enum.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -50,13 +51,20 @@ public class User implements UserDetails {
   private LocalDateTime createdAt;
   @Nullable
   private LocalDateTime updatedAt;
-
   @Enumerated(EnumType.STRING)
   private Role role;
 
+  @Column(name = "kieu_thanh_vien_id", insertable = false, updatable = false)
+  private int kieu_thanh_vien_id;
+
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
-  private List<Token> tokens;
   @JsonManagedReference
+  private List<Token> tokens;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "kieu_thanh_vien_id")
+  @JsonBackReference
+  private KieuThanhVien kieuThanhVien;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

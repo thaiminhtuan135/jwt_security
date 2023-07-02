@@ -1,8 +1,10 @@
 package com.alibou.security.controller.user;
 
+import com.alibou.security.Entity.KieuThanhVien;
 import com.alibou.security.Entity.User;
 import com.alibou.security.common.Helper;
 import com.alibou.security.service.OtpService;
+import com.alibou.security.service.kieuThanhVien.KieuThanhVienService;
 import com.alibou.security.service.user.UserService;
 import com.alibou.security.service.mail.MailService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,8 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -39,7 +40,8 @@ public class UserController {
     private MailService mailService;
     @Autowired
     private OtpService otpService;
-
+    @Autowired
+    private KieuThanhVienService kieuThanhVienService;
     @GetMapping
     public Page<User> pagination(@RequestParam(defaultValue = "0") int pageNo,
                                  @RequestParam(defaultValue = "10") int pageSize,
@@ -69,6 +71,7 @@ public class UserController {
             @RequestParam(required = false) LocalDate ngayHoanTuc,
             @RequestParam(required = false) String gioiTinh,
             @RequestParam(required = false, defaultValue = "false") boolean isUpdateImg,
+            @RequestParam(required = false) int kieuThanhVien,
             @PathVariable(required = false) Integer id) {
 
         if (userService.existEmail(email, id)) {
@@ -78,39 +81,48 @@ public class UserController {
         return userService.getUserById(id).map(user -> {
 
             try {
-                if (isUpdateImg == false) {
+                KieuThanhVien ktv = kieuThanhVienService.getById(kieuThanhVien).get();
+                // img
+                try {
+                    if (isUpdateImg == false) {
 
-                } else {
-                    if (user.getAnhChup() == null || user.getAnhChup().equals("")) {
-                        if (anhChup != null) {
-                            user.setAnhChup(Helper.upload(anhChup, "images/phattu"));
-                        }
                     } else {
-                        if (anhChup != null) {
-                            Helper.delete(user.getAnhChup());
-                            user.setAnhChup(Helper.upload(anhChup, "images/phattu"));
+                        if (user.getAnhChup() == null || user.getAnhChup().equals("")) {
+                            if (anhChup != null) {
+                                user.setAnhChup(Helper.upload(anhChup, "images/phattu"));
+                            }
                         } else {
-                            Helper.delete(user.getAnhChup());
-                            user.setAnhChup("");
+                            if (anhChup != null) {
+                                Helper.delete(user.getAnhChup());
+                                user.setAnhChup(Helper.upload(anhChup, "images/phattu"));
+                            } else {
+                                Helper.delete(user.getAnhChup());
+                                user.setAnhChup("");
+                            }
                         }
                     }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                user.setHo(ho);
+                user.setTen(ten);
+                user.setTenDem(tenDem);
+                user.setPhapDanh(phapDanh);
+                user.setSoDienThoai(soDienThoai);
+                user.setNgaySinh(ngaySinh);
+                user.setNgayXuatGia(ngayXuatGia);
+                user.setNgayXuatGia(ngayXuatGia);
+                user.setDaHoanTuc(daHoanTuc);
+                user.setNgayHoanTuc(ngayHoanTuc);
+                user.setGioiTinh(gioiTinh);
+                user.setNgayCapNhat(LocalDate.now());
+                user.setKieuThanhVien(ktv);
+                user.setKieu_thanh_vien_id(ktv.getId());
+                return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+            } catch (NoSuchElementException e) {
+                return new ResponseEntity<KieuThanhVien>(HttpStatus.NOT_FOUND);
             }
-            user.setHo(ho);
-            user.setTen(ten);
-            user.setTenDem(tenDem);
-            user.setPhapDanh(phapDanh);
-            user.setSoDienThoai(soDienThoai);
-            user.setNgaySinh(ngaySinh);
-            user.setNgayXuatGia(ngayXuatGia);
-            user.setNgayXuatGia(ngayXuatGia);
-            user.setDaHoanTuc(daHoanTuc);
-            user.setNgayHoanTuc(ngayHoanTuc);
-            user.setGioiTinh(gioiTinh);
-            user.setNgayCapNhat(LocalDate.now());
-            return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -171,5 +183,16 @@ public class UserController {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/get-data/kieu-thanh-vien")
+    public List<Map<String,Object>> getKieuThanhVien() {
+        List<Map<String, Object>> list = new ArrayList<>();
 
+        kieuThanhVienService.getAll().forEach(kieuThanhVien -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", kieuThanhVien.getTenKieu());
+            map.put("value", kieuThanhVien.getId());
+            list.add(map);
+        });
+        return list;
+    }
 }
