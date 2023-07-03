@@ -61,10 +61,23 @@ public class User implements UserDetails {
   @JsonManagedReference
   private List<Token> tokens;
 
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  @JsonManagedReference
+  private List<DaoTrang> daoTrangList;
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  @JsonManagedReference
+  private List<PhatTuDaoTrang> phatTuDaoTrangList;
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  @JsonManagedReference
+  private List<DonDangKy> donDangKyList;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "kieu_thanh_vien_id")
   @JsonBackReference
   private KieuThanhVien kieuThanhVien;
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
