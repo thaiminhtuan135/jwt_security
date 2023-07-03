@@ -56,11 +56,11 @@ public class User implements UserDetails {
 
   @Column(name = "kieu_thanh_vien_id", insertable = false, updatable = false)
   private int kieu_thanh_vien_id;
-
+  @Column(name = "chua_id", insertable = false, updatable = false)
+  private int chuaId;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
   @JsonManagedReference
   private List<Token> tokens;
-
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
   @JsonManagedReference
   private List<DaoTrang> daoTrangList;
@@ -78,7 +78,10 @@ public class User implements UserDetails {
   @JsonBackReference
   private KieuThanhVien kieuThanhVien;
 
-
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "chua_id")
+  @JsonBackReference
+  private Chua chua;
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return role.getAuthorities();

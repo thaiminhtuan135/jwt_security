@@ -8,7 +8,6 @@ import java.util.Optional;
 public interface KieuThanhVienService {
     List<KieuThanhVien> getAll();
     KieuThanhVien save(KieuThanhVien kieuThanhVien);
-
     Optional<KieuThanhVien> getById(int id);
     void delete(int id);
 }

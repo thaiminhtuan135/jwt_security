@@ -7,8 +7,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 public class Helper {
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
@@ -40,5 +40,17 @@ public class Helper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static <T> List<Map<String, Object>> processEnumList(List<T> list , Function<T, ?> title , Function<T, ?> value) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        list.forEach(item -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", title.apply(item));
+            map.put("value", value.apply(item));
+            result.add(map);
+        });
+        return result;
     }
 }

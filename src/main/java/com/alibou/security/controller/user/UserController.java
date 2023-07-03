@@ -1,9 +1,11 @@
 package com.alibou.security.controller.user;
 
+import com.alibou.security.Entity.Chua;
 import com.alibou.security.Entity.KieuThanhVien;
 import com.alibou.security.Entity.User;
 import com.alibou.security.common.Helper;
 import com.alibou.security.service.OtpService;
+import com.alibou.security.service.chua.ChuaService;
 import com.alibou.security.service.kieuThanhVien.KieuThanhVienService;
 import com.alibou.security.service.user.UserService;
 import com.alibou.security.service.mail.MailService;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +29,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 
 @CrossOrigin
 @RestController
@@ -42,6 +46,8 @@ public class UserController {
     private OtpService otpService;
     @Autowired
     private KieuThanhVienService kieuThanhVienService;
+    @Autowired
+    private ChuaService chuaService;
     @GetMapping
     public Page<User> pagination(@RequestParam(defaultValue = "0") int pageNo,
                                  @RequestParam(defaultValue = "10") int pageSize,
@@ -72,6 +78,7 @@ public class UserController {
             @RequestParam(required = false) String gioiTinh,
             @RequestParam(required = false, defaultValue = "false") boolean isUpdateImg,
             @RequestParam(required = false) int kieuThanhVien,
+            @RequestParam(required = false) int chuaId,
             @PathVariable(required = false) Integer id) {
 
         if (userService.existEmail(email, id)) {
@@ -82,6 +89,7 @@ public class UserController {
 
             try {
                 KieuThanhVien ktv = kieuThanhVienService.getById(kieuThanhVien).get();
+                Chua chua = chuaService.getById(chuaId).get();
                 // img
                 try {
                     if (isUpdateImg == false) {
@@ -104,6 +112,7 @@ public class UserController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
                 user.setHo(ho);
                 user.setTen(ten);
                 user.setTenDem(tenDem);
@@ -118,9 +127,12 @@ public class UserController {
                 user.setNgayCapNhat(LocalDate.now());
                 user.setKieuThanhVien(ktv);
                 user.setKieu_thanh_vien_id(ktv.getId());
+                user.setChua(chua);
+                user.setChuaId(chua.getId());
                 return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+
             } catch (NoSuchElementException e) {
-                return new ResponseEntity<KieuThanhVien>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -185,14 +197,13 @@ public class UserController {
     }
     @GetMapping("/get-data/kieu-thanh-vien")
     public List<Map<String,Object>> getKieuThanhVien() {
-        List<Map<String, Object>> list = new ArrayList<>();
-
-        kieuThanhVienService.getAll().forEach(kieuThanhVien -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("title", kieuThanhVien.getTenKieu());
-            map.put("value", kieuThanhVien.getId());
-            list.add(map);
-        });
-        return list;
+        return Helper
+                .processEnumList(kieuThanhVienService.getAll(), KieuThanhVien::getTenKieu, KieuThanhVien::getId);
     }
+    @GetMapping("/get-data/chua")
+    public List<Map<String,Object>> getChua() {
+        return Helper
+                .processEnumList(chuaService.getAll(), Chua::getTenChua, Chua::getId);
+    }
+
 }
