@@ -46,6 +46,16 @@ public class KieuThanhVienController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody String kieuThanhVien) {
+        try {
+            KieuThanhVien kieuThanhVien1 = gson.fromJson(kieuThanhVien, KieuThanhVien.class);
+            return new ResponseEntity<>(kieuThanhVienService.save(kieuThanhVien1), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Create fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/{id}/edit")
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody String dataUpdate) {
 //        Gson gson = new Gson();
