@@ -198,12 +198,12 @@ public class UserController {
     @GetMapping("/get-data/kieu-thanh-vien")
     public List<Map<String,Object>> getKieuThanhVien() {
         return Helper
-                .processEnumList(kieuThanhVienService.getAll(), KieuThanhVien::getTenKieu, KieuThanhVien::getId);
+                .processEntityList(kieuThanhVienService.getAll(), KieuThanhVien::getTenKieu, KieuThanhVien::getId);
     }
     @GetMapping("/get-data/chua")
     public List<Map<String,Object>> getChua() {
         return Helper
-                .processEnumList(chuaService.getAll(), Chua::getTenChua, Chua::getId);
+                .processEntityList(chuaService.getAll(), Chua::getTenChua, Chua::getId);
     }
 
 }

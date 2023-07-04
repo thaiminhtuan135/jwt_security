@@ -42,7 +42,7 @@ public class Helper {
         }
     }
 
-    public static <T> List<Map<String, Object>> processEnumList(List<T> list , Function<T, ?> title , Function<T, ?> value) {
+    public static <T> List<Map<String, Object>> processEntityList(List<T> list , Function<T, ?> title , Function<T, ?> value) {
         List<Map<String, Object>> result = new ArrayList<>();
 
         list.forEach(item -> {
