@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Permission {
     ADMIN_READ("admin:read"),
+    MANAGER_READ("manager:read"),
     USER_READ("user:read")
     ;
     @Getter

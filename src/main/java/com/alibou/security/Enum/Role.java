@@ -7,8 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.Set;
 
-import static com.alibou.security.Enum.Permission.ADMIN_READ;
-import static com.alibou.security.Enum.Permission.USER_READ;
+import static com.alibou.security.Enum.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
@@ -16,6 +15,13 @@ public enum Role {
   ADMIN(
           Set.of(
                   ADMIN_READ,
+                  MANAGER_READ,
+                  USER_READ
+          )
+  ),
+  MANAGER(
+          Set.of(
+                  MANAGER_READ,
                   USER_READ
           )
   ),
