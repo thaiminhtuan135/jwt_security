@@ -51,9 +51,10 @@ public class SecurityConfiguration {
                 )
                 .permitAll()
 
-                .requestMatchers("/api/v1/admin/**").hasRole(ADMIN.name())
-                .requestMatchers("/api/v1/manager/**").hasAnyRole(ADMIN.name(), MANAGER.name())
-                .requestMatchers("/api/v1/user/**").hasAnyRole(ADMIN.name(), USER.name(), MANAGER.name())
+                .requestMatchers("/api/v1/admin-senior/**").hasRole(ADMIN_SENIOR.name())
+                .requestMatchers("/api/v1/admin/**").hasAnyRole(ADMIN_SENIOR.name(),ADMIN.name())
+                .requestMatchers("/api/v1/manager/**").hasAnyRole(ADMIN_SENIOR.name(), ADMIN.name(), MANAGER.name())
+                .requestMatchers("/api/v1/user/**").hasAnyRole(ADMIN_SENIOR.name(),ADMIN.name(), USER.name(), MANAGER.name())
                 .anyRequest()
                 .authenticated()
                 .and()

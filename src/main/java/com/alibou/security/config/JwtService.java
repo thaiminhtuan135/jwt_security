@@ -42,6 +42,12 @@ public class JwtService {
       if ("ROLE_USER".equals(x.getAuthority())) {
         role.set("USER");
       }
+      if ("ROLE_MANAGER".equals(x.getAuthority())) {
+        role.set("MANAGER");
+      }
+      if ("ROLE_ADMIN_SENIOR".equals(x.getAuthority())) {
+        role.set("ADMIN_SENIOR");
+      }
       System.out.println(x);
     });
     return Jwts

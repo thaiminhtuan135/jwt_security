@@ -11,7 +11,14 @@ import static com.alibou.security.Enum.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
-
+  ADMIN_SENIOR(
+          Set.of(
+                  ADMIN_SENIOR_READ,
+                  ADMIN_READ,
+                  MANAGER_READ,
+                  USER_READ
+          )
+  ),
   ADMIN(
           Set.of(
                   ADMIN_READ,
