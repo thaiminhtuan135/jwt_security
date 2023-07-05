@@ -23,6 +23,7 @@ public class Chua {
     private LocalDateTime ngayThanhLap;
     private String diaChi;
     private LocalDateTime capNhat;
+    private int truTriId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "chua")
     @JsonManagedReference
