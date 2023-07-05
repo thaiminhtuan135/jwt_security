@@ -20,8 +20,8 @@ public class DonDangKy {
     private int id;
     private int trangThaiDon;
     private LocalDateTime ngayGuiDon;
-    private LocalDateTime ngaySyLy;
-    private int nguoiulyId;
+    private LocalDateTime ngaySuLy;
+    private Integer nguoiSuLyId;
     @Column(name = "dao_trang_id", insertable = false, updatable = false)
     private int daoTrangid;
 
