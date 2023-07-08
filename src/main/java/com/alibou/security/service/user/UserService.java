@@ -1,5 +1,6 @@
 package com.alibou.security.service.user;
 
+import com.alibou.security.DTO.ThongKePhatTuDTO;
 import com.alibou.security.Entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,5 @@ public interface UserService {
 
     List<User> pagination(String phapDanh , String ten,Boolean daHoanTuc, String gioiTinh);
 
+    List<ThongKePhatTuDTO> thongKe();
 }

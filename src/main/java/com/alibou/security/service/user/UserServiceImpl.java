@@ -1,5 +1,6 @@
 package com.alibou.security.service.user;
 
+import com.alibou.security.DTO.ThongKePhatTuDTO;
 import com.alibou.security.Entity.User;
 import com.alibou.security.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> pagination(String phapDanh, String ten, Boolean daHoanTuc, String gioiTinh) {
         return userRepository.pagination(phapDanh, ten, daHoanTuc,gioiTinh);
+    }
+
+    @Override
+    public List<ThongKePhatTuDTO> thongKe() {
+        return userRepository.thongKeSoLanPhatTu();
     }
 
 

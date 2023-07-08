@@ -3,9 +3,8 @@ package com.alibou.security.repo;
 import java.util.List;
 import java.util.Optional;
 
+import com.alibou.security.DTO.ThongKePhatTuDTO;
 import com.alibou.security.Entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,6 +23,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "AND (u.GioiTinh = :gioiTinh OR :gioiTinh IS NULL)")
     List<User> pagination(String phapDanh, String ten , Boolean daHoanTuc,String gioiTinh);
 
+    @Query("SELECT new com.alibou.security.DTO.ThongKePhatTuDTO(u.email, COUNT(ptdt.daoTrangId)) " +
+            "FROM User u " +
+            "JOIN PhatTuDaoTrang ptdt ON u.id = ptdt.phatTuId " +
+            "WHERE ptdt.daThamGia = true " +
+            "GROUP BY u.email")
+    List<ThongKePhatTuDTO> thongKeSoLanPhatTu();
 
 //  Optional<User> findByEmail(String email);
 
