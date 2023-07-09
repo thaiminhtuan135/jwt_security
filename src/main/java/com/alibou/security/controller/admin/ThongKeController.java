@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //select u.email , u.ten , count(ptdt.dao_trang_id)
@@ -37,8 +39,17 @@ public class ThongKeController {
     private UserService userService;
     @GetMapping
     public List<?> thongKe() {
-        List<?> list = userService.thongKe();
+        List<ThongKePhatTuDTO> listPhatTu = userService.thongKe();
+        List<Object[]> listOfLists = new ArrayList<>();
+        String[] list1 = new String[listPhatTu.size()];
+        Long[] list2 = new Long[listPhatTu.size()];
+        for (int i = 0; i < listPhatTu.size(); i++) {
+            list1[i] = listPhatTu.get(i).getEmail();
+            list2[i] = listPhatTu.get(i).getSoLanThamGia();
+        }
+        listOfLists.add(list1);
+        listOfLists.add(list2);
 
-        return list;
+        return listOfLists;
     }
 }

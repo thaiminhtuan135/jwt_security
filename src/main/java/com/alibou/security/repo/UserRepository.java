@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "FROM User u " +
             "JOIN PhatTuDaoTrang ptdt ON u.id = ptdt.phatTuId " +
             "WHERE ptdt.daThamGia = true " +
-            "GROUP BY u.email")
+            "GROUP BY u.email order by COUNT(ptdt.daoTrangId) ASC")
     List<ThongKePhatTuDTO> thongKeSoLanPhatTu();
 
 //  Optional<User> findByEmail(String email);
