@@ -52,5 +52,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.thongKeSoLanPhatTu();
     }
 
+    @Override
+    public List<User> getPhatTuByDaoTrangId(int daoTrangId) {
+        return userRepository.GetPhatTuByDaoTrangId(daoTrangId);
+    }
+
 
 }

@@ -101,6 +101,10 @@ public class DaoTrangController {
             return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
         }
     }
-
+    @GetMapping("/getAll")
+    public List<DaoTrang> getAll() {
+        List<DaoTrang> list = daoTrangService.getAll();
+        return list;
+    }
 
 }

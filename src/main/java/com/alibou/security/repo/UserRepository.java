@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "AND (u.Ten = :ten OR :ten IS NULL) " +
             "AND (u.DaHoanTuc = :daHoanTuc OR :daHoanTuc IS NULL) " +
             "AND (u.GioiTinh = :gioiTinh OR :gioiTinh IS NULL)")
-    List<User> pagination(String phapDanh, String ten , Boolean daHoanTuc,String gioiTinh);
+    List<User> pagination(String phapDanh, String ten, Boolean daHoanTuc, String gioiTinh);
 
     @Query("SELECT new com.alibou.security.DTO.ThongKePhatTuDTO(u.email, COUNT(ptdt.daoTrangId)) " +
             "FROM User u " +
@@ -30,6 +30,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "GROUP BY u.email order by COUNT(ptdt.daoTrangId) ASC")
     List<ThongKePhatTuDTO> thongKeSoLanPhatTu();
 
+    @Query("select u from User u" +
+            " join PhatTuDaoTrang ptdt on u.id = ptdt.phatTuId" +
+            "    where ptdt.daoTrangId = :idDaoTrang and ptdt.daThamGia = true")
+    List<User> GetPhatTuByDaoTrangId(int idDaoTrang);
 //  Optional<User> findByEmail(String email);
 
 //  @Query(value = "SELECT * FROM _user WHERE id = ?1", nativeQuery = true)

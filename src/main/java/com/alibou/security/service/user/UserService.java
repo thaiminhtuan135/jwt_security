@@ -22,4 +22,6 @@ public interface UserService {
     List<User> pagination(String phapDanh , String ten,Boolean daHoanTuc, String gioiTinh);
 
     List<ThongKePhatTuDTO> thongKe();
+
+    List<User> getPhatTuByDaoTrangId(int daoTrangId);
 }
