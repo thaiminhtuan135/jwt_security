@@ -61,9 +61,9 @@ public class User implements UserDetails {
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy = "user")
   @JsonManagedReference
   private List<Token> tokens;
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-  @JsonManagedReference
-  private List<DaoTrang> daoTrangList;
+//  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+//  @JsonManagedReference
+//  private List<DaoTrang> daoTrangList;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
   @JsonManagedReference

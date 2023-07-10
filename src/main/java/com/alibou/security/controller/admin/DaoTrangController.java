@@ -41,70 +41,70 @@ public class DaoTrangController {
         return new PageImpl<>(list, pageable, list.size());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Integer id) {
-        try {
-            DaoTrang daoTrang = daoTrangService.getById(id).get();
-            return new ResponseEntity<>(daoTrang, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
-        }
-    }
-
-
-    @PostMapping()
-    public ResponseEntity<?> create(@RequestBody DaoTrangDTO daoTrangDTO
-    ) {
-        return userService.getUserById(daoTrangDTO.getNguoiChuTriId()).map(user -> {
-//            DaoTrang daoTrang1 = gson.fromJson(daoTrang, DaoTrang.class);
-            DaoTrang daoTrang = new DaoTrang();
-            daoTrang.setNoiToChuc(daoTrangDTO.getNoiToChuc());
-            daoTrang.setSoThanhVienThamGia(daoTrangDTO.getSoThanhVienThamGia());
-            daoTrang.setThoiGianToChuc(daoTrangDTO.getThoiGianToChuc());
-            daoTrang.setNoiDung(daoTrangDTO.getNoiDung());
-            daoTrang.setDaKetThuc(daoTrangDTO.isDaKetThuc());
-            daoTrang.setNguoiChuTriId(user.getId());
-            daoTrang.setUser(user);
-            return new ResponseEntity<>(daoTrangService.save(daoTrang), HttpStatus.CREATED);
-        }).orElseGet(
-                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
-        );
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody String daoTrangDTO,
-                                    @PathVariable Integer id) {
-        DaoTrang daoTrangUpdate = gson.fromJson(String.valueOf(daoTrangDTO), DaoTrang.class);
-        return daoTrangService.getById(id).map(daoTrang -> {
-
-            try {
-                User user = userService.getUserById(daoTrangUpdate.getNguoiChuTriId()).get();
-                daoTrangUpdate.setNguoiChuTriId(user.getId());
-                daoTrangUpdate.setUser(user);
-                daoTrangUpdate.setId(daoTrang.getId());
-                return new ResponseEntity<>(daoTrangService.save(daoTrangUpdate), HttpStatus.OK);
-            } catch (NoSuchElementException e) {
-                return new ResponseEntity<>("Update Fail", HttpStatus.NOT_FOUND);
-            }
-        }).orElseGet(
-                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
-        );
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        try {
-            DaoTrang daoTrang = daoTrangService.getById(id).get();
-            daoTrangService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
-        }
-    }
-    @GetMapping("/getAll")
-    public List<DaoTrang> getAll() {
-        List<DaoTrang> list = daoTrangService.getAll();
-        return list;
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getById(@PathVariable Integer id) {
+//        try {
+//            DaoTrang daoTrang = daoTrangService.getById(id).get();
+//            return new ResponseEntity<>(daoTrang, HttpStatus.OK);
+//        } catch (NoSuchElementException e) {
+//            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+//        }
+//    }
+//
+//
+//    @PostMapping()
+//    public ResponseEntity<?> create(@RequestBody DaoTrangDTO daoTrangDTO
+//    ) {
+//        return userService.getUserById(daoTrangDTO.getNguoiChuTriId()).map(user -> {
+////            DaoTrang daoTrang1 = gson.fromJson(daoTrang, DaoTrang.class);
+//            DaoTrang daoTrang = new DaoTrang();
+//            daoTrang.setNoiToChuc(daoTrangDTO.getNoiToChuc());
+//            daoTrang.setSoThanhVienThamGia(daoTrangDTO.getSoThanhVienThamGia());
+//            daoTrang.setThoiGianToChuc(daoTrangDTO.getThoiGianToChuc());
+//            daoTrang.setNoiDung(daoTrangDTO.getNoiDung());
+//            daoTrang.setDaKetThuc(daoTrangDTO.isDaKetThuc());
+//            daoTrang.setNguoiChuTriId(user.getId());
+//            daoTrang.setUser(user);
+//            return new ResponseEntity<>(daoTrangService.save(daoTrang), HttpStatus.CREATED);
+//        }).orElseGet(
+//                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
+//        );
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> update(@RequestBody String daoTrangDTO,
+//                                    @PathVariable Integer id) {
+//        DaoTrang daoTrangUpdate = gson.fromJson(String.valueOf(daoTrangDTO), DaoTrang.class);
+//        return daoTrangService.getById(id).map(daoTrang -> {
+//
+//            try {
+//                User user = userService.getUserById(daoTrangUpdate.getNguoiChuTriId()).get();
+//                daoTrangUpdate.setNguoiChuTriId(user.getId());
+//                daoTrangUpdate.setUser(user);
+//                daoTrangUpdate.setId(daoTrang.getId());
+//                return new ResponseEntity<>(daoTrangService.save(daoTrangUpdate), HttpStatus.OK);
+//            } catch (NoSuchElementException e) {
+//                return new ResponseEntity<>("Update Fail", HttpStatus.NOT_FOUND);
+//            }
+//        }).orElseGet(
+//                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
+//        );
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> delete(@PathVariable Integer id) {
+//        try {
+//            DaoTrang daoTrang = daoTrangService.getById(id).get();
+//            daoTrangService.delete(id);
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        } catch (NoSuchElementException e) {
+//            return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
+//        }
+//    }
+//    @GetMapping("/getAll")
+//    public List<DaoTrang> getAll() {
+//        List<DaoTrang> list = daoTrangService.getAll();
+//        return list;
+//    }
 
 }

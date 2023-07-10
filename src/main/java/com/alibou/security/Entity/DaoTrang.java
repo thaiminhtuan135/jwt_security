@@ -25,12 +25,12 @@ public class DaoTrang {
     private LocalDateTime thoiGianToChuc;
     private String noiDung;
     private boolean daKetThuc;
-    @Column(name = "nguoi_chu_tri_id", insertable = false, updatable = false)
-    private int nguoiChuTriId;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nguoi_chu_tri_id")
-    @JsonBackReference
-    private User user;
+//    @Column(name = "nguoi_chu_tri_id", insertable = false, updatable = false)
+//    private int nguoiChuTriId;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "nguoi_chu_tri_id")
+//    @JsonBackReference
+//    private User user;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "daoTrang")
     @JsonManagedReference
