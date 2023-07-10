@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +49,7 @@ public class UserController {
     private KieuThanhVienService kieuThanhVienService;
     @Autowired
     private ChuaService chuaService;
+
     @GetMapping
     public Page<User> pagination(@RequestParam(defaultValue = "0") int pageNo,
                                  @RequestParam(defaultValue = "10") int pageSize,
@@ -59,7 +61,6 @@ public class UserController {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         List<User> list = userService.pagination(phapDanh, ten, daHoanTuc, gioiTinh);
         return new PageImpl<>(list, pageable, list.size());
-
     }
 
     @PutMapping("/{id}/edit")
@@ -195,15 +196,24 @@ public class UserController {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/get-data/kieu-thanh-vien")
-    public List<Map<String,Object>> getKieuThanhVien() {
+    public List<Map<String, Object>> getKieuThanhVien() {
         return Helper
                 .processEntityList(kieuThanhVienService.getAll(), KieuThanhVien::getTenKieu, KieuThanhVien::getId);
     }
+
     @GetMapping("/get-data/chua")
-    public List<Map<String,Object>> getChua() {
+    public List<Map<String, Object>> getChua() {
         return Helper
                 .processEntityList(chuaService.getAll(), Chua::getTenChua, Chua::getId);
     }
 
+    @GetMapping("/getPhatTuByDaoTrangId/{daoTrangId}")
+    public Page<User> getPhatTuByDaoTrangId(@RequestParam(defaultValue = "0") int pageNo,
+                                            @RequestParam(defaultValue = "10") int pageSize, @PathVariable Integer daoTrangId) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        List<User> list = userService.getPhatTuByDaoTrangId(daoTrangId);
+        return new PageImpl<>(list, pageable, list.size());
+    }
 }
