@@ -22,6 +22,7 @@ public class DaoTrang {
     private int id;
     private String noiToChuc;
     private int soThanhVienThamGia;
+    private String ten;
     private LocalDateTime thoiGianToChuc;
     private String noiDung;
     private boolean daKetThuc;
