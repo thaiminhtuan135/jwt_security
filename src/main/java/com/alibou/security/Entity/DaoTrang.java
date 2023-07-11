@@ -27,7 +27,8 @@ public class DaoTrang {
     private String noiDung;
     private boolean daKetThuc;
 //    @Column(name = "nguoi_chu_tri_id", insertable = false, updatable = false)
-//    private int nguoiChuTriId;
+    @Column(name = "nguoi_chu_tri_id")
+    private int nguoiChuTriId;
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "nguoi_chu_tri_id")
 //    @JsonBackReference

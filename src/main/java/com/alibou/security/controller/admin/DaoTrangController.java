@@ -4,8 +4,10 @@ import com.alibou.security.DTO.DaoTrangDTO;
 import com.alibou.security.Entity.DaoTrang;
 import com.alibou.security.Entity.KieuThanhVien;
 import com.alibou.security.Entity.User;
+import com.alibou.security.Enum.Role;
 import com.alibou.security.common.Gson;
 import com.alibou.security.service.daoTrang.DaoTrangService;
+import com.alibou.security.service.mail.MailService;
 import com.alibou.security.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -30,6 +34,8 @@ public class DaoTrangController {
     private DaoTrangService daoTrangService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MailService mailService;
     private final com.google.gson.Gson gson = Gson.gson();
 
     @GetMapping
@@ -41,7 +47,7 @@ public class DaoTrangController {
         return new PageImpl<>(list, pageable, list.size());
     }
 
-//    @GetMapping("/{id}")
+    //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getById(@PathVariable Integer id) {
 //        try {
 //            DaoTrang daoTrang = daoTrangService.getById(id).get();
@@ -52,24 +58,43 @@ public class DaoTrangController {
 //    }
 //
 //
-//    @PostMapping()
-//    public ResponseEntity<?> create(@RequestBody DaoTrangDTO daoTrangDTO
-//    ) {
-//        return userService.getUserById(daoTrangDTO.getNguoiChuTriId()).map(user -> {
-////            DaoTrang daoTrang1 = gson.fromJson(daoTrang, DaoTrang.class);
-//            DaoTrang daoTrang = new DaoTrang();
-//            daoTrang.setNoiToChuc(daoTrangDTO.getNoiToChuc());
-//            daoTrang.setSoThanhVienThamGia(daoTrangDTO.getSoThanhVienThamGia());
-//            daoTrang.setThoiGianToChuc(daoTrangDTO.getThoiGianToChuc());
-//            daoTrang.setNoiDung(daoTrangDTO.getNoiDung());
-//            daoTrang.setDaKetThuc(daoTrangDTO.isDaKetThuc());
-//            daoTrang.setNguoiChuTriId(user.getId());
+    @PostMapping()
+    public ResponseEntity<?> create(@RequestBody DaoTrangDTO daoTrangDTO
+    ) {
+        return userService.getUserById(daoTrangDTO.getNguoiChuTriId()).map(user -> {
+//            DaoTrang daoTrang1 = gson.fromJson(daoTrang, DaoTrang.class);
+            DaoTrang daoTrang = new DaoTrang();
+            daoTrang.setNoiToChuc(daoTrangDTO.getNoiToChuc());
+            daoTrang.setSoThanhVienThamGia(daoTrangDTO.getSoThanhVienThamGia());
+            daoTrang.setThoiGianToChuc(daoTrangDTO.getThoiGianToChuc());
+            daoTrang.setNoiDung(daoTrangDTO.getNoiDung());
+            daoTrang.setDaKetThuc(daoTrangDTO.isDaKetThuc());
+            daoTrang.setNguoiChuTriId(user.getId());
+            if (daoTrangService.save(daoTrang) != null) {
+                List<String> listuserMail = userService.pagination(null, null, null, null)
+                        .stream()
+                        .filter(user1 -> user1.getRole() == Role.USER)
+                        .map(User::getEmail).toList();
+                listuserMail.forEach(System.out::println);
+                listuserMail.forEach(mail ->
+                        mailService.sendMail
+                                (mail,
+                                        "Thông tin về buổi hoạt động đạo tràng",
+                                        "Nơi tổ chức: " + daoTrang.getNoiToChuc() + "\n" +
+                                                "Thời gian tổ chức " + daoTrang.getThoiGianToChuc() + "\n" +
+                                                "Nội dung: " + daoTrang.getNoiDung() + "\n" +
+                                                "Người trụ trì: " + user.getTen()
+                                )
+                );
+            }
+
+
 //            daoTrang.setUser(user);
-//            return new ResponseEntity<>(daoTrangService.save(daoTrang), HttpStatus.CREATED);
-//        }).orElseGet(
-//                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
-//        );
-//    }
+            return new ResponseEntity<>("OK", HttpStatus.CREATED);
+        }).orElseGet(
+                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        );
+    }
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<?> update(@RequestBody String daoTrangDTO,
