@@ -25,7 +25,7 @@ public class DaoTrang {
     private String ten;
     private LocalDateTime thoiGianToChuc;
     private String noiDung;
-    private boolean daKetThuc;
+    private int daKetThuc;
 //    @Column(name = "nguoi_chu_tri_id", insertable = false, updatable = false)
     @Column(name = "nguoi_chu_tri_id")
     private int nguoiChuTriId;

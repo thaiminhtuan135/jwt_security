@@ -24,4 +24,5 @@ public interface UserService {
     List<ThongKePhatTuDTO> thongKe();
 
     List<User> getPhatTuByDaoTrangId(int daoTrangId);
+    List<User> getAll();
 }

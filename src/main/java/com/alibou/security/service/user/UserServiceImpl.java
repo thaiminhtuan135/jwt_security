@@ -57,5 +57,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.GetPhatTuByDaoTrangId(daoTrangId);
     }
 
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
 
 }

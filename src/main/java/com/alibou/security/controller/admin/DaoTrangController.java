@@ -1,11 +1,15 @@
 package com.alibou.security.controller.admin;
 
 import com.alibou.security.DTO.DaoTrangDTO;
+import com.alibou.security.Entity.Chua;
 import com.alibou.security.Entity.DaoTrang;
 import com.alibou.security.Entity.KieuThanhVien;
 import com.alibou.security.Entity.User;
 import com.alibou.security.Enum.Role;
+import com.alibou.security.Enum.TrangThaiDaoTRang;
+import com.alibou.security.Enum.TrangThaidon;
 import com.alibou.security.common.Gson;
+import com.alibou.security.common.Helper;
 import com.alibou.security.service.daoTrang.DaoTrangService;
 import com.alibou.security.service.mail.MailService;
 import com.alibou.security.service.user.UserService;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -65,29 +70,29 @@ public class DaoTrangController {
 //            DaoTrang daoTrang1 = gson.fromJson(daoTrang, DaoTrang.class);
             DaoTrang daoTrang = new DaoTrang();
             daoTrang.setNoiToChuc(daoTrangDTO.getNoiToChuc());
-            daoTrang.setSoThanhVienThamGia(daoTrangDTO.getSoThanhVienThamGia());
+            daoTrang.setSoThanhVienThamGia(0);
             daoTrang.setThoiGianToChuc(daoTrangDTO.getThoiGianToChuc());
             daoTrang.setNoiDung(daoTrangDTO.getNoiDung());
-            daoTrang.setDaKetThuc(daoTrangDTO.isDaKetThuc());
+            daoTrang.setDaKetThuc(daoTrangDTO.getDaKetThuc());
             daoTrang.setNguoiChuTriId(user.getId());
-            if (daoTrangService.save(daoTrang) != null) {
-                List<String> listuserMail = userService.pagination(null, null, null, null)
-                        .stream()
-                        .filter(user1 -> user1.getRole() == Role.USER)
-                        .map(User::getEmail).toList();
-                listuserMail.forEach(System.out::println);
-                listuserMail.forEach(mail ->
-                        mailService.sendMail
-                                (mail,
-                                        "Thông tin về buổi hoạt động đạo tràng",
-                                        "Nơi tổ chức: " + daoTrang.getNoiToChuc() + "\n" +
-                                                "Thời gian tổ chức " + daoTrang.getThoiGianToChuc() + "\n" +
-                                                "Nội dung: " + daoTrang.getNoiDung() + "\n" +
-                                                "Người trụ trì: " + user.getTen()
-                                )
-                );
-            }
-
+//            if (daoTrangService.save(daoTrang) != null) {
+//                List<String> listuserMail = userService.pagination(null, null, null, null)
+//                        .stream()
+//                        .filter(user1 -> user1.getRole() == Role.USER)
+//                        .map(User::getEmail).toList();
+//                listuserMail.forEach(System.out::println);
+//                listuserMail.forEach(mail ->
+//                        mailService.sendMail
+//                                (mail,
+//                                        "Thông tin về buổi hoạt động đạo tràng",
+//                                        "Nơi tổ chức: " + daoTrang.getNoiToChuc() + "\n" +
+//                                                "Thời gian tổ chức " + daoTrang.getThoiGianToChuc() + "\n" +
+//                                                "Nội dung: " + daoTrang.getNoiDung() + "\n" +
+//                                                "Người trụ trì: " + user.getTen()
+//                                )
+//                );
+//            }
+            daoTrangService.save(daoTrang);
 
 //            daoTrang.setUser(user);
             return new ResponseEntity<>("OK", HttpStatus.CREATED);
@@ -95,26 +100,29 @@ public class DaoTrangController {
                 () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
         );
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> update(@RequestBody String daoTrangDTO,
-//                                    @PathVariable Integer id) {
+
+    //
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@RequestBody DaoTrangDTO daoTrangDTO,
+                                    @PathVariable Integer id) {
 //        DaoTrang daoTrangUpdate = gson.fromJson(String.valueOf(daoTrangDTO), DaoTrang.class);
-//        return daoTrangService.getById(id).map(daoTrang -> {
-//
-//            try {
-//                User user = userService.getUserById(daoTrangUpdate.getNguoiChuTriId()).get();
-//                daoTrangUpdate.setNguoiChuTriId(user.getId());
-//                daoTrangUpdate.setUser(user);
-//                daoTrangUpdate.setId(daoTrang.getId());
-//                return new ResponseEntity<>(daoTrangService.save(daoTrangUpdate), HttpStatus.OK);
-//            } catch (NoSuchElementException e) {
-//                return new ResponseEntity<>("Update Fail", HttpStatus.NOT_FOUND);
-//            }
-//        }).orElseGet(
-//                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
-//        );
-//    }
+        return daoTrangService.getById(id).map(daoTrang -> {
+
+            try {
+                User user = userService.getUserById(daoTrangDTO.getNguoiChuTriId()).get();
+                daoTrang.setNoiDung(daoTrangDTO.getNoiDung());
+                daoTrang.setNoiToChuc(daoTrangDTO.getNoiToChuc());
+                daoTrang.setThoiGianToChuc(daoTrangDTO.getThoiGianToChuc());
+                daoTrang.setDaKetThuc(daoTrangDTO.getDaKetThuc());
+                daoTrang.setNguoiChuTriId(user.getId());
+                return new ResponseEntity<>(daoTrangService.save(daoTrang), HttpStatus.OK);
+            } catch (NoSuchElementException e) {
+                return new ResponseEntity<>("Update Fail", HttpStatus.NOT_FOUND);
+            }
+        }).orElseGet(
+                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND)
+        );
+    }
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> delete(@PathVariable Integer id) {
@@ -131,5 +139,16 @@ public class DaoTrangController {
 //        List<DaoTrang> list = daoTrangService.getAll();
 //        return list;
 //    }
+    @GetMapping("/get-data/nguoiChuTri")
+    public List<Map<String, Object>> getTrangThai() {
+        return Helper.processEntityList(
+                userService.getAll()
+                        .stream()
+                        .filter(user -> user.getRole() == Role.ADMIN)
+                        .collect(Collectors.toList()),
+                User::getTen,
+                User::getId
+        );
+    }
 
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
 
@@ -14,9 +15,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class DaoTrangDTO {
     private String noiToChuc;
-    private int soThanhVienThamGia;
     private LocalDateTime thoiGianToChuc;
     private String noiDung;
-    private boolean daKetThuc;
+    private int daKetThuc;
     private int nguoiChuTriId;
 }
