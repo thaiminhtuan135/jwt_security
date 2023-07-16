@@ -1,6 +1,7 @@
 package com.alibou.security.controller.manager;
 
 import com.alibou.security.DTO.DonDangKy.DonDangKyManagerDTO;
+import com.alibou.security.DTO.DonDangKy.DonDangKyResponse;
 import com.alibou.security.Entity.DaoTrang;
 import com.alibou.security.Entity.DonDangKy;
 import com.alibou.security.Entity.User;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -35,6 +38,7 @@ public class DonDangKyManagerController {
 
     @Autowired
     private UserService userService;
+
     @GetMapping
     public Page<DonDangKy> pagination(@RequestParam(defaultValue = "0") int pageNo,
                                       @RequestParam(defaultValue = "10") int pageSize
@@ -52,14 +56,42 @@ public class DonDangKyManagerController {
                 User user = userService.getUserById(donDangKyManagerDTO.getNguoiSuLyId()).get();
                 donDangKy.setNgaySuLy(LocalDateTime.now());
                 donDangKy.setNguoiSuLyId(donDangKyManagerDTO.getNguoiSuLyId());
+                donDangKy.setTrangThaiDon(donDangKyManagerDTO.getTrangThaiDon());
                 return new ResponseEntity<>(donDangKyService.save(donDangKy), HttpStatus.OK);
             } catch (NoSuchElementException e) {
                 return new ResponseEntity<>("Update Fail", HttpStatus.NOT_FOUND);
             }
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Don dang ky not found"));
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Don dang ky not found"));
 
     }
 
+    @GetMapping("/getAllDaoTrang")
+    public Page<DaoTrang> getAllDaoTRang(@RequestParam(defaultValue = "0") int pageNo,
+                                         @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        List<DaoTrang> list = daoTrangService.getAll();
+        return new PageImpl<>(list, pageable, list.size());
+    }
 
+    @GetMapping("/getDonDangKyByDaoTRangId/{id}")
+    public List<DonDangKyResponse> getDonDangKyByDaoTRangId(@PathVariable Integer id) {
+        List<DonDangKyResponse> list = new ArrayList<>();
+        donDangKyService.getAll()
+                .stream()
+                .filter(donDangKy -> donDangKy.getDaoTrangid() == id)
+                .toList()
+                .forEach(donDangKy -> {
+                    DonDangKyResponse donDangKyResponse = new DonDangKyResponse();
+                    donDangKyResponse.setPhatTuId(donDangKy.getUser().getId());
+                    donDangKyResponse.setDonDangKyId(donDangKy.getId());
+                    donDangKyResponse.setTrangThaiDon(donDangKy.getTrangThaiDon());
+                    donDangKyResponse.setNgayGuiDon(donDangKy.getNgayGuiDon());
+                    donDangKyResponse.setEmail(donDangKy.getUser().getEmail());
+                    donDangKyResponse.setTen(donDangKy.getUser().getTen());
+                    list.add(donDangKyResponse);
+                });
 
+        return list;
+    }
 }

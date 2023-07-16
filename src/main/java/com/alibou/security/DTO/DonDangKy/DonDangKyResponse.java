@@ -1,17 +1,17 @@
 package com.alibou.security.DTO.DonDangKy;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@AllArgsConstructor
 @RequiredArgsConstructor
-public class DonDangKyManagerDTO {
-    private int nguoiSuLyId;
+public class DonDangKyResponse {
+    private int phatTuId;
+    private int donDangKyId;
     private int trangThaiDon;
+    private LocalDateTime ngayGuiDon;
+    private String email;
+    private String ten;
 }
