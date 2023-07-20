@@ -1,7 +1,9 @@
 package com.alibou.security.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 
 @Data
@@ -18,6 +20,7 @@ public class PhatTuDaoTrang {
     private int id;
 
     private boolean daThamGia;
+    @Nullable
     private String lyDoKhongThamGia;
 
     @Column(name = "dao_trang_id", insertable = false, updatable = false)

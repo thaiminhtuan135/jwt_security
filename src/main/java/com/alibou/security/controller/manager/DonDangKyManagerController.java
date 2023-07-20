@@ -4,9 +4,12 @@ import com.alibou.security.DTO.DonDangKy.DonDangKyManagerDTO;
 import com.alibou.security.DTO.DonDangKy.DonDangKyResponse;
 import com.alibou.security.Entity.DaoTrang;
 import com.alibou.security.Entity.DonDangKy;
+import com.alibou.security.Entity.PhatTuDaoTrang;
 import com.alibou.security.Entity.User;
+import com.alibou.security.Enum.TrangThaidon;
 import com.alibou.security.service.daoTrang.DaoTrangService;
 import com.alibou.security.service.donDangKy.DonDangKyService;
+import com.alibou.security.service.phatTuDaoTrang.PhatTuDaoTrangService;
 import com.alibou.security.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +42,9 @@ public class DonDangKyManagerController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PhatTuDaoTrangService phatTuDaoTrangService;
+
     @GetMapping
     public Page<DonDangKy> pagination(@RequestParam(defaultValue = "0") int pageNo,
                                       @RequestParam(defaultValue = "10") int pageSize
@@ -57,6 +63,22 @@ public class DonDangKyManagerController {
                 donDangKy.setNgaySuLy(LocalDateTime.now());
                 donDangKy.setNguoiSuLyId(donDangKyManagerDTO.getNguoiSuLyId());
                 donDangKy.setTrangThaiDon(donDangKyManagerDTO.getTrangThaiDon());
+
+                // phat tu dao trang
+                Optional<PhatTuDaoTrang> phatTuDaoTrang1 = phatTuDaoTrangService.getByDaoTangIdAndPhatTuId(donDangKy.getDaoTrang().getId(), donDangKy.getUser().getId());
+                if (phatTuDaoTrang1.isPresent()) {
+                    phatTuDaoTrang1.get().setDaThamGia(donDangKyManagerDTO.getTrangThaiDon() == Integer.parseInt(TrangThaidon.CHAP_NHAN.getValue()));
+                    phatTuDaoTrangService.save(phatTuDaoTrang1.get());
+                } else {
+                    PhatTuDaoTrang phatTuDaoTrang = new PhatTuDaoTrang();
+                    phatTuDaoTrang.setDaoTrang(donDangKy.getDaoTrang());
+                    phatTuDaoTrang.setDaoTrangId(donDangKy.getDaoTrang().getId());
+                    phatTuDaoTrang.setPhatTuId(donDangKy.getUser().getId());
+                    phatTuDaoTrang.setUser(donDangKy.getUser());
+                    phatTuDaoTrang.setDaThamGia(donDangKyManagerDTO.getTrangThaiDon() == Integer.parseInt(TrangThaidon.CHAP_NHAN.getValue()));
+                    phatTuDaoTrangService.save(phatTuDaoTrang);
+                }
+//
                 return new ResponseEntity<>(donDangKyService.save(donDangKy), HttpStatus.OK);
             } catch (NoSuchElementException e) {
                 return new ResponseEntity<>("Update Fail", HttpStatus.NOT_FOUND);
