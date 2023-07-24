@@ -60,6 +60,7 @@ public class DonDangKyManagerController {
         return donDangKyService.getById(id).map(donDangKy -> {
             try {
                 User user = userService.getUserById(donDangKyManagerDTO.getNguoiSuLyId()).get();
+                DaoTrang daoTrang = daoTrangService.getById(donDangKy.getDaoTrang().getId()).get();
                 donDangKy.setNgaySuLy(LocalDateTime.now());
                 donDangKy.setNguoiSuLyId(donDangKyManagerDTO.getNguoiSuLyId());
                 donDangKy.setTrangThaiDon(donDangKyManagerDTO.getTrangThaiDon());
@@ -77,6 +78,9 @@ public class DonDangKyManagerController {
                     phatTuDaoTrang.setUser(donDangKy.getUser());
                     phatTuDaoTrang.setDaThamGia(donDangKyManagerDTO.getTrangThaiDon() == Integer.parseInt(TrangThaidon.CHAP_NHAN.getValue()));
                     phatTuDaoTrangService.save(phatTuDaoTrang);
+
+                    daoTrang.setSoThanhVienThamGia(daoTrang.getSoThanhVienThamGia()+1);
+                    daoTrangService.save(daoTrang);
                 }
 //
                 return new ResponseEntity<>(donDangKyService.save(donDangKy), HttpStatus.OK);
