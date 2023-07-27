@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -45,10 +46,26 @@ public class DaoTrangController {
 
     @GetMapping
     public Page<DaoTrang> pagination(@RequestParam(defaultValue = "0") int pageNo,
-                                     @RequestParam(defaultValue = "10") int pageSize
+                                     @RequestParam(defaultValue = "10") int pageSize,
+                                     @RequestParam(required = false) String daKetThuc,
+                                     @RequestParam(required = false, defaultValue = "") String ten
+
     ) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        List<DaoTrang> list = daoTrangService.getAll();
+        List<DaoTrang> list = new ArrayList<>();
+        if (!ten.equals("") && daKetThuc != null) {
+            list = daoTrangService.getAll().stream()
+                    .filter(daoTrang -> daoTrang.getDaKetThuc() == Integer.parseInt(daKetThuc))
+                    .filter(daoTrang -> daoTrang.getTen().contains(ten))
+                    .toList();
+        } else if (!ten.equals("")) {
+            list = daoTrangService.getAll().stream().filter(daoTrang -> daoTrang.getTen().contains(ten)).toList();
+        } else if (daKetThuc != null) {
+            list = daoTrangService.getAll().stream().filter(daoTrang -> daoTrang.getDaKetThuc() == Integer.parseInt(daKetThuc)).toList();
+        }
+        else {
+            list = daoTrangService.getAll();
+        }
         return new PageImpl<>(list, pageable, list.size());
     }
 

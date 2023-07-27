@@ -17,10 +17,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> existsByEmail(@Param("email") String email, @Param("id") Integer id);
 
     @Query("SELECT u FROM User u " +
-            "WHERE (u.PhapDanh = :phapDanh OR :phapDanh IS NULL) " +
-            "AND (u.Ten = :ten OR :ten IS NULL) " +
-            "AND (u.DaHoanTuc = :daHoanTuc OR :daHoanTuc IS NULL) " +
-            "AND (u.GioiTinh = :gioiTinh OR :gioiTinh IS NULL)")
+            "WHERE (:phapDanh IS NULL OR u.PhapDanh = :phapDanh) " +
+            "AND (:ten IS NULL OR u.Ten LIKE %:ten% ) " +
+            "AND (:daHoanTuc IS NULL OR u.DaHoanTuc = :daHoanTuc) " +
+            "AND (:gioiTinh IS NULL OR u.GioiTinh = :gioiTinh )")
     List<User> pagination(String phapDanh, String ten, Boolean daHoanTuc, String gioiTinh);
 
     @Query("SELECT new com.alibou.security.DTO.ThongKePhatTuDTO(u.email, COUNT(ptdt.daoTrangId)) " +
@@ -30,10 +30,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "GROUP BY u.email order by COUNT(ptdt.daoTrangId) ASC")
     List<ThongKePhatTuDTO> thongKeSoLanPhatTu();
 
-    @Query("select u from User u" +
-            " join PhatTuDaoTrang ptdt on u.id = ptdt.phatTuId" +
-            "    where ptdt.daoTrangId = :idDaoTrang and ptdt.daThamGia = true")
-    List<User> GetPhatTuByDaoTrangId(int idDaoTrang);
+    @Query("select u from User u " +
+            "join PhatTuDaoTrang ptdt on u.id = ptdt.phatTuId " +
+            "AND (:daHoanTuc IS NULL OR u.DaHoanTuc = :daHoanTuc)" +
+            "AND (:gioiTinh IS NULL OR u.GioiTinh = :gioiTinh ) "+
+            "AND (:ten IS NULL OR u.Ten LIKE %:ten%) "+
+            "where ptdt.daoTrangId = :idDaoTrang and ptdt.daThamGia = true")
+    List<User> GetPhatTuByDaoTrangId(int idDaoTrang, Boolean daHoanTuc, String gioiTinh , String ten);
 //  Optional<User> findByEmail(String email);
 
 //  @Query(value = "SELECT * FROM _user WHERE id = ?1", nativeQuery = true)

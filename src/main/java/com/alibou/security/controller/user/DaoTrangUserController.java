@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,17 @@ public class DaoTrangUserController {
     private UserService userService;
     @GetMapping
     public Page<DaoTrang> pagination(@RequestParam(defaultValue = "0") int pageNo,
-                                     @RequestParam(defaultValue = "10") int pageSize
+                                     @RequestParam(defaultValue = "10") int pageSize,
+                                     @RequestParam(required = false) String ten
+
     ) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        List<DaoTrang> list = daoTrangService.getAll().stream().filter(daoTrang -> daoTrang.getDaKetThuc() == 1).collect(Collectors.toList());
+        List<DaoTrang> list = new ArrayList<>();
+        list = daoTrangService.getAll().stream().filter(daoTrang -> daoTrang.getDaKetThuc() == 1).collect(Collectors.toList());
+        if (ten != null) {
+            list = list.stream().filter(daoTrang -> daoTrang.getTen().contains(ten)).collect(Collectors.toList());
+        }
+
         return new PageImpl<>(list, pageable, list.size());
     }
 

@@ -79,7 +79,7 @@ public class DonDangKyManagerController {
                     phatTuDaoTrang.setDaThamGia(donDangKyManagerDTO.getTrangThaiDon() == Integer.parseInt(TrangThaidon.CHAP_NHAN.getValue()));
                     phatTuDaoTrangService.save(phatTuDaoTrang);
 
-                    daoTrang.setSoThanhVienThamGia(daoTrang.getSoThanhVienThamGia()+1);
+                    daoTrang.setSoThanhVienThamGia(daoTrang.getSoThanhVienThamGia() + 1);
                     daoTrangService.save(daoTrang);
                 }
 //
@@ -93,15 +93,30 @@ public class DonDangKyManagerController {
 
     @GetMapping("/getAllDaoTrang")
     public Page<DaoTrang> getAllDaoTRang(@RequestParam(defaultValue = "0") int pageNo,
-                                         @RequestParam(defaultValue = "10") int pageSize
+                                         @RequestParam(defaultValue = "10") int pageSize,
+                                         @RequestParam(required = false) String daKetThuc,
+                                         @RequestParam(required = false) String ten
     ) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        List<DaoTrang> list = daoTrangService.getAll();
+        List<DaoTrang> list = new ArrayList<>();
+        if (ten!=null && daKetThuc != null) {
+            list = daoTrangService.getAll().stream()
+                    .filter(daoTrang -> daoTrang.getDaKetThuc() == Integer.parseInt(daKetThuc))
+                    .filter(daoTrang -> daoTrang.getTen().contains(ten))
+                    .toList();
+        } else if (ten!=null) {
+            list = daoTrangService.getAll().stream().filter(daoTrang -> daoTrang.getTen().contains(ten)).toList();
+        } else if (daKetThuc != null) {
+            list = daoTrangService.getAll().stream().filter(daoTrang -> daoTrang.getDaKetThuc() == Integer.parseInt(daKetThuc)).toList();
+        }
+        else {
+            list = daoTrangService.getAll();
+        }
         return new PageImpl<>(list, pageable, list.size());
     }
 
     @GetMapping("/getDonDangKyByDaoTRangId/{id}")
-    public List<DonDangKyResponse> getDonDangKyByDaoTRangId(@PathVariable Integer id) {
+    public List<DonDangKyResponse> getDonDangKyByDaoTRangId(@PathVariable Integer id,@RequestParam(required = false) String ten ) {
         List<DonDangKyResponse> list = new ArrayList<>();
         donDangKyService.getAll()
                 .stream()
@@ -117,7 +132,9 @@ public class DonDangKyManagerController {
                     donDangKyResponse.setTen(donDangKy.getUser().getTen());
                     list.add(donDangKyResponse);
                 });
-
+        if (ten !=null) {
+            return list.stream().filter(donDangKyResponse -> donDangKyResponse.getTen().contains(ten)).collect(Collectors.toList());
+        }
         return list;
     }
 }

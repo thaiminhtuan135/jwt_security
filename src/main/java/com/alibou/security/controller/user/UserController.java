@@ -211,9 +211,15 @@ public class UserController {
 
     @GetMapping("/getPhatTuByDaoTrangId/{daoTrangId}")
     public Page<User> getPhatTuByDaoTrangId(@RequestParam(defaultValue = "0") int pageNo,
-                                            @RequestParam(defaultValue = "10") int pageSize, @PathVariable Integer daoTrangId) {
+                                            @RequestParam(defaultValue = "10") int pageSize,
+                                            @RequestParam(required = false) String ten,
+                                            @RequestParam(required = false) Boolean daHoanTuc,
+                                            @RequestParam(required = false) String gioiTinh,
+                                            @PathVariable Integer daoTrangId
+    )
+    {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        List<User> list = userService.getPhatTuByDaoTrangId(daoTrangId);
+        List<User> list = userService.getPhatTuByDaoTrangId(daoTrangId,daHoanTuc,gioiTinh,ten);
         return new PageImpl<>(list, pageable, list.size());
     }
 }

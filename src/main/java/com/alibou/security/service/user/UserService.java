@@ -23,6 +23,6 @@ public interface UserService {
 
     List<ThongKePhatTuDTO> thongKe();
 
-    List<User> getPhatTuByDaoTrangId(int daoTrangId);
+    List<User> getPhatTuByDaoTrangId(int daoTrangId, Boolean daHoanTuc, String gioiTinh, String ten);
     List<User> getAll();
 }

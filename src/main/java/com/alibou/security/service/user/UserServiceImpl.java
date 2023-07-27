@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> pagination(String phapDanh, String ten, Boolean daHoanTuc, String gioiTinh) {
-        return userRepository.pagination(phapDanh, ten, daHoanTuc,gioiTinh);
+        return userRepository.pagination(phapDanh, ten, daHoanTuc, gioiTinh);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getPhatTuByDaoTrangId(int daoTrangId) {
-        return userRepository.GetPhatTuByDaoTrangId(daoTrangId);
+    public List<User> getPhatTuByDaoTrangId(int daoTrangId, Boolean daHoanTuc, String gioiTinh, String ten) {
+        return userRepository.GetPhatTuByDaoTrangId(daoTrangId, daHoanTuc, gioiTinh, ten);
     }
 
     @Override
